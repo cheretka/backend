@@ -30,43 +30,23 @@ class CheckersGame(TurnGame):
 
     async def run(self):
         logging.info("run()")
-        # while self.__no_2_players and not self._is_end():
-        #     print("---", len(self._players), " PLAYERS----")
-        #     time.sleep(6)
-        #
-        # logging.info("------------------2 PLAYERS------------------")
-
-        # while not self._is_end():
-        #
-        #     components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
-        #     # delta = await self._clock.tick(self._game_config['fps'])
-        #     # await self.update_game_state(components_to_update, round(delta, self.__n_digits))
-        #     #
-        #     if self.__no_2_players:
-        #         print("---",  len(self._players), " PLAYERS----")
-        #         time.sleep(6)
-        #         # self.__empty_server_timer += delta
-        #     else:
-        #         print("------------------2 PLAYERS------------------")
-        #         # self.__empty_server_timer = 0
-        #    # await self.send_ping(delta)
 
         delta = 0
         while not self._is_end():
-            components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
-            delta = await self._clock.tick(self._game_config['fps'])
-            # print("components_to_update delta")
-            # print(components_to_update)
-            # print(delta)
-            await self.update_game_state(components_to_update)
+
+            print("---", len(self._players), " PLAYERS----")
 
             if self.__no_2_players:
                 self.__empty_server_timer += delta
+                time.sleep(7)
+                continue
             else:
                 self.__empty_server_timer = 0
 
-            print("---", len(self._players), " PLAYERS----")
-            time.sleep(6)
+            components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
+            delta = await self._clock.tick(self._game_config['fps'])
+
+            await self.update_game_state(components_to_update)
 
             await self.send_ping(delta)
 
@@ -115,10 +95,24 @@ class CheckersGame(TurnGame):
 
         state['last_move'] = self.board_state.last_move
 
-        if self.board_state.get_win() == None:
-            state['game_status'] = "on"
+        if self.__no_2_players:
+            state['game_status'] = "wait"
         else:
-            state['game_status'] = "off"
+            match self.board_state.get_win():
+                case 'remis':
+                    state['game_status'] = "draw"
+                case None:
+                    state['game_status'] = "on"
+                case 'a':
+                    if current_player.letter == 'a':
+                        state['game_status'] = "won"
+                    else:
+                        state['game_status'] = "lost"
+                case 'r':
+                    if current_player.letter == 'r':
+                        state['game_status'] = "won"
+                    else:
+                        state['game_status'] = "lost"
 
         return state
 
