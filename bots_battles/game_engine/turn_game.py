@@ -31,35 +31,22 @@ class TurnGame(Game):
         self._cleanup()
 
 
-    async def update_game_state(self, components_to_update: Set[str]):
+    async def update_game_state(self):
         '''
         Helper method which can be used to get all players states and pass them to communication handler.
         '''
-        if len(components_to_update) == 0:
-            return
-
-        states = dict()
-        spectator_state = self.get_state_for_spectator(components_to_update)
-        # spectator_state['delta'] = delta
-        for spectator_uuid in self._spectators.keys():
-            states[spectator_uuid] = orjson.dumps(spectator_state).decode("utf-8")
-        await self._communication_handler.handle_game_state(states)
-
         states: Dict[UUID, str] = dict()
-        archived_states: Dict(str, str) = dict()
+
+
         for player_uuid in self._players.keys():
-            player_state = self.get_state_for_player(components_to_update, player_uuid)
+            player_state = self.get_state_for_player(player_uuid)
             states[player_uuid] = orjson.dumps(player_state).decode("utf-8")
-            archived_states[str(player_uuid)] = player_state
 
-        # save players states changes into archive record
-        self.archive_record.states.append(archived_states)
-
-        print("player_state")
-        print(player_state)
-        print("states to front")
-        print(states)
-        print("\n\n")
+        # print("player_state")
+        # print(player_state)
+        # print("states to front")
+        # print(states)
+        # print("\n\n")
         await self._communication_handler.handle_game_state(states)
 
     async def send_ping(self, delta):

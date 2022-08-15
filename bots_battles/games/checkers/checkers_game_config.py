@@ -7,4 +7,4 @@ class CheckersGameConfig(RealtimeGameConfig):
 
     def __init__(self):
         super().__init__()
-        self._add_option('waiting_time', IntOption("After this time without player, session will be closed (in s)", 600, 30, 1500), True)
+        self._add_option('waiting_time', IntOption("After this time without player, session will be closed (in s)", 5, 3, 10), True)

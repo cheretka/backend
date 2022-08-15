@@ -35,10 +35,13 @@ class CheckersGame(TurnGame):
         while not self._is_end():
             time.sleep(1)
             print("---", len(self._players), " PLAYERS----")
-            components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
+            move_completed = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
             delta = await self._clock.tick(self._game_config['fps'])
 
-            await self.update_game_state(components_to_update)
+            print("move_completed ", move_completed)
+            if move_completed != None:
+                self.board_state = move_completed
+                await self.update_game_state()
 
             if self.__no_2_players:
                 self.__empty_server_timer += delta
@@ -63,11 +66,7 @@ class CheckersGame(TurnGame):
                 # nie dodaje nowego gracza
                 pass
 
-        components = set()
-        components.add("board")
-        components.add("your_move")
-
-        player_state = self.get_state_for_player(components, player_uuid)
+        player_state = self.get_state_for_player(player_uuid)
         print("end")
         return orjson.dumps(player_state).decode("utf-8")
 
@@ -76,7 +75,7 @@ class CheckersGame(TurnGame):
         if len(self._players) < 2:
             self.__no_2_players = True
 
-    def get_state_for_player(self, components_to_update: Set[str], player_uuid: UUID):
+    def get_state_for_player(self, player_uuid: UUID):
         current_player = self._players[player_uuid]
         state = dict()
 

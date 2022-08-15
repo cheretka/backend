@@ -15,21 +15,17 @@ class CheckersGameLogic(GameLogic):
 
     def process_input(self, player_uuid: str, message: Dict[str, str], delta: float):
 
-        components_to_update = set()
         player = self.players.get(player_uuid, None)
         if player is None:
-            return components_to_update
+            return None
 
         user_move = message['move']
 
         if self.is_move_possible(user_move):
-            #  move is possible
-            pass
-        else:
-            # chosen move isn't possible
-            pass
+            self.board = self.board.make_move(user_move)
+            return self.board
 
-        return components_to_update
+        return None
 
     def is_move_possible(self, move):
 
