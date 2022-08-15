@@ -28,16 +28,12 @@ class CheckersGame(TurnGame):
         self.archive_record = JSONGame(info)
 
     async def run(self):
-        delta = 0
-
         logging.info("run()")
-
-
-        while self.__no_2_players and not self._is_end():
-            print("---", len(self._players), " PLAYERS----")
-            time.sleep(6)
-
-        logging.info("------------------2 PLAYERS------------------")
+        # while self.__no_2_players and not self._is_end():
+        #     print("---", len(self._players), " PLAYERS----")
+        #     time.sleep(6)
+        #
+        # logging.info("------------------2 PLAYERS------------------")
 
         # while not self._is_end():
         #
@@ -53,6 +49,25 @@ class CheckersGame(TurnGame):
         #         print("------------------2 PLAYERS------------------")
         #         # self.__empty_server_timer = 0
         #    # await self.send_ping(delta)
+
+        delta = 0
+        while not self._is_end():
+            components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
+            delta = await self._clock.tick(self._game_config['fps'])
+            # print("components_to_update delta")
+            # print(components_to_update)
+            # print(delta)
+            await self.update_game_state(components_to_update)
+
+            if self.__no_2_players:
+                self.__empty_server_timer += delta
+            else:
+                self.__empty_server_timer = 0
+
+            print("---", len(self._players), " PLAYERS----")
+            time.sleep(6)
+
+            await self.send_ping(delta)
 
         self.archive_record.dump_to_archive()
         self._cleanup()
@@ -119,8 +134,8 @@ class CheckersGame(TurnGame):
     def _is_end(self):
         '''Check if game should end.'''
         return self._is_terminated \
-               or self.__empty_server_timer >= self._game_config["waiting_time"] \
-               or self.board_state.get_win() != None
+               or self.__empty_server_timer >= self._game_config["waiting_time"]
+               # or self.board_state.get_win() != None
 
     def _cleanup(self):
         pass

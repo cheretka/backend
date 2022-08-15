@@ -47,7 +47,7 @@ class GameServer:
 
     async def __handle_new_connection(self, websocket: WebSocketClientProtocol, path: str):
         '''Async method to handle and propagate to proper methods connections.'''
-
+        print("======= __handle_new_connection()")
         logging.info(f'new connection with {websocket.id}, with path = {path}')
         query = parse_qs(urlparse(unquote_plus(path)).query)
         logging.info(f"PARSED QUERY: {query}")
@@ -126,12 +126,13 @@ class GameServer:
         session_id: session id where new player will be assign.
         is_spectator: Define if new player is spectator.
         '''
+        print("======= join_to_game()")
 
         if session_id in self.__sessions:
             if is_spectator:
                 await self.__sessions[session_id].create_spectator(websocket, player_name)
             else:
-                print("self.__sessions[session_id].is_full()")
+                print("======= self.__sessions[session_id].is_full()")
                 if self.__sessions[session_id].is_full():
                     await self.__send_full_session_session_message(websocket, session_id)
                 else:

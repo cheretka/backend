@@ -31,7 +31,7 @@ class TurnGame(Game):
         self._cleanup()
 
 
-    async def update_game_state(self, components_to_update: Set[str], delta: float):
+    async def update_game_state(self, components_to_update: Set[str]):
         '''
         Helper method which can be used to get all players states and pass them to communication handler.
         '''
@@ -40,7 +40,7 @@ class TurnGame(Game):
 
         states = dict()
         spectator_state = self.get_state_for_spectator(components_to_update)
-        spectator_state['delta'] = delta
+        # spectator_state['delta'] = delta
         for spectator_uuid in self._spectators.keys():
             states[spectator_uuid] = orjson.dumps(spectator_state).decode("utf-8")
         await self._communication_handler.handle_game_state(states)

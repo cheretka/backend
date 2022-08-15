@@ -54,11 +54,11 @@ class RealtimeGame(Game):
             archived_states[str(player_uuid)] = player_state
         # save players states changes into archive record
         self.archive_record.states.append(archived_states)
-        print("player_state")
-        print(player_state)
-        print("states to front")
-        print(states)
-        print("\n\n")
+        # print("player_state")
+        # print(player_state)
+        # print("states to front")
+        # print(states)
+        # print("\n\n")
         await self._communication_handler.handle_game_state(states)
 
     async def send_ping(self, delta):

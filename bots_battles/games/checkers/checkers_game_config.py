@@ -1,8 +1,9 @@
 from bots_battles.game_engine.config_options import IntOption
 from bots_battles.game_engine.real_time_game_config import GameConfig
+from bots_battles.game_engine.real_time_game_config import RealtimeGameConfig
 
 
-class CheckersGameConfig(GameConfig):
+class CheckersGameConfig(RealtimeGameConfig):
 
     def __init__(self):
         super().__init__()
