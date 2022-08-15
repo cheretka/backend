@@ -4,6 +4,7 @@ import time
 from uuid import UUID
 import logging
 import orjson
+from copy import deepcopy
 
 from bots_battles.game_engine import CommunicationHandler, JSONGame, TurnGame
 from .checkers_board import CheckersBoard
@@ -107,7 +108,7 @@ class CheckersGame(TurnGame):
         elif current_player.letter == 'r':
             state['board'] = self.turn_over_board(self.board_state.board)
 
-        if self.board_state.current_player == current_player.letter:
+        if self.board_state.current_player == current_player.letter and not self.__no_2_players:
             state['your_move'] = True
         else:
             state['your_move'] = False
@@ -121,7 +122,7 @@ class CheckersGame(TurnGame):
 
         return state
 
-    def turn_over_board(b):
+    def turn_over_board(self, b):
 
         board = deepcopy(b)
 
