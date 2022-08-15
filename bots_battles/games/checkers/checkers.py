@@ -33,20 +33,17 @@ class CheckersGame(TurnGame):
 
         delta = 0
         while not self._is_end():
-
+            time.sleep(1)
             print("---", len(self._players), " PLAYERS----")
-
-            if self.__no_2_players:
-                self.__empty_server_timer += delta
-                time.sleep(7)
-                continue
-            else:
-                self.__empty_server_timer = 0
-
             components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
             delta = await self._clock.tick(self._game_config['fps'])
 
             await self.update_game_state(components_to_update)
+
+            if self.__no_2_players:
+                self.__empty_server_timer += delta
+            else:
+                self.__empty_server_timer = 0
 
             await self.send_ping(delta)
 
