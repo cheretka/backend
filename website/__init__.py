@@ -20,7 +20,7 @@ def create_app(game_server: GameServer, game_factory: GameFactory) -> Flask:
         from .services import basic_bp, game_bp, init_db, init_states
         import website.services as sv
         sv.init_game_server(game_server)
-        
+
         app.register_blueprint(basic_bp)
         app.register_blueprint(game_bp)
 

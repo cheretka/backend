@@ -19,7 +19,7 @@ from .. import Game, GameConfig
 class Session:
     '''
     Define Session class, which handles one game instance and manage all it's players.
-    Each session instance has a CommunicationHandler object which will be 
+    Each session instance has a CommunicationHandler object which will be
     shared between all players.
     '''
 
@@ -89,7 +89,7 @@ class Session:
             self.__game.remove_player(websocket.id)
             self.__players.pop(websocket.id, None)
             logging.info('client disconnected')
-    
+
     async def create_spectator(self, websocket: WebSocketClientProtocol, spectator_name: str):
         '''Async method to create spectator and add them to game
         Parameters:
@@ -124,8 +124,8 @@ class Session:
         self.__game_name = game_name
         self.__game = self.__game_factory.create_game(game_type, self.__communication_handler, game_config)
 
-        logging.info(f"create new game in session {self.session_id}, game type {game_type}")
-        
+        logging.info(f"create new game in session {self.session_id},\n game type {game_type}")
+
         await asyncio.create_task(self.__game.run())
 
     async def terminate_game(self):
@@ -144,7 +144,7 @@ class Session:
     async def clear(self):
         '''Clears connections with clients'''
         [await player.terminate() for player in self.__players.values()]
-    
+
     def is_full(self):
         if self.__game == None:
             raise RuntimeError(f'Game in this session (id={self.session_id}) do not exists!')

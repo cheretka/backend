@@ -3,10 +3,10 @@ import orjson
 from uuid import UUID
 from typing import Dict, Set
 from .game_logic import GameLogic
-from .game import Game 
-from .game_logic import GameLogic 
-from .game_config import GameConfig 
-from .clock import Clock 
+from .game import Game
+from .game_logic import GameLogic
+from .game_config import GameConfig
+from .clock import Clock
 from .communication_handler import CommunicationHandler
 from .game_archive import JSONGame
 
@@ -30,15 +30,15 @@ class RealtimeGame(Game):
         self.archive_record.dump_to_archive()
         self._cleanup()
 
-        
+
     async def update_game_state(self, components_to_update: Set[str], delta: float):
         '''
         Helper method which can be used to get all players states and pass them to communication handler.
-        '''  
+        '''
         if len(components_to_update) == 0:
-            return 
+            return
 
-        states = dict() 
+        states = dict()
         spectator_state = self.get_state_for_spectator(components_to_update)
         spectator_state['delta'] = delta
         for spectator_uuid in self._spectators.keys():
@@ -54,6 +54,11 @@ class RealtimeGame(Game):
             archived_states[str(player_uuid)] = player_state
         # save players states changes into archive record
         self.archive_record.states.append(archived_states)
+        print("player_state")
+        print(player_state)
+        print("states to front")
+        print(states)
+        print("\n\n")
         await self._communication_handler.handle_game_state(states)
 
     async def send_ping(self, delta):

@@ -24,6 +24,8 @@ class AgarntGameLogic(GameLogic):
         '''
         Process player inputs using game rules.
         '''
+        print("message")
+        print(message)
         components_to_update = set()
         player = self.__players.get(player_uuid, None)
         if player is None:
@@ -46,6 +48,8 @@ class AgarntGameLogic(GameLogic):
             components_to_update.add("score")
             self.__board.refill_food()
 
+        print("components_to_update")
+        print(components_to_update)
         return components_to_update
 
     def update_eaten_foods(self, player):

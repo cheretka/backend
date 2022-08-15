@@ -18,3 +18,4 @@ GAMES: Dict[str, Tuple[Type[Game], Type[GameConfig]]] = {
 GAMES_NAMES_MAPPING: Dict[str, List[str]] = {'agarnt': ['agarnt', "agarn't"]}
 
 PREFFERED_WS_PORT = 2137
+

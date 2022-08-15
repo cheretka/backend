@@ -43,4 +43,3 @@ if __name__ == "__main__":
     print(game_server)
     game_server.terminate()
     game_thread.join()
-    

@@ -42,6 +42,9 @@ class AgarntGame(RealtimeGame):
         while not self._is_end():
             components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
             delta = await self._clock.tick(self._game_config['fps'])
+            print("components_to_update delta")
+            print(components_to_update)
+            print(delta)
             await self.update_game_state(components_to_update, round(delta, self.__n_digits))
 
             if self.__no_players:
