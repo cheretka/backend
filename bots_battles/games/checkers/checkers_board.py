@@ -16,6 +16,7 @@ class CheckersBoard:
 
         self.current_player = "r"
         self.steps_without_hitting = {"r": 0, "a": 0}
+        self.last_move = []
 
 
     def get_win(self):
@@ -54,6 +55,8 @@ class CheckersBoard:
                 newState.steps_without_hitting[newState.get_current_player()] += 1
 
         newState.current_player = 'a' if newState.current_player == 'r' else 'r'
+
+        newState.last_move = [move[0], move[-1]]
 
         return newState
 
@@ -173,3 +176,6 @@ class CheckersBoard:
                             list_moves.append(new_move)
 
         return list_moves
+
+    def get_current_player(self):
+        return self.current_player

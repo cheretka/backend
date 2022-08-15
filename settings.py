@@ -7,7 +7,7 @@ from bots_battles import Game, GameConfig, AgarntGame, AgarntGameConfig, Checker
 """
 GAMES: Dict[str, Tuple[Type[Game], Type[GameConfig]]] = {
             'agarnt': (AgarntGame, AgarntGameConfig),
-            'Checkers': (CheckersGame, CheckersGameConfig)
+            'checkers': (CheckersGame, CheckersGameConfig)
             }
 
 """

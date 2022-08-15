@@ -1,8 +1,9 @@
 from typing import Dict
+from uuid import UUID
 
 from bots_battles.game_engine.game_logic import GameLogic
 from .checkers_board import CheckersBoard
-
+from .checkers_player import CheckersPlayer
 
 class CheckersGameLogic(GameLogic):
 
@@ -39,3 +40,6 @@ class CheckersGameLogic(GameLogic):
                 return True
 
         return False
+
+    def set_players(self, players: Dict[UUID, CheckersPlayer]):
+        self.__players = players

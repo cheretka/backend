@@ -32,7 +32,7 @@ class GameFactory:
         method
         communication_handler: CommunicationHandler object.
         config: Game config object. If set to None, default one will be used.
-        
+
         Returns created game instance.
         '''
 
@@ -44,14 +44,14 @@ class GameFactory:
 
     def get_game_config_as_json(self, game_type:str):
         if game_type not in self.__games:
-            raise RuntimeError("game_type is not recognized")
+            raise RuntimeError(game_type, "game_type is not recognized", self.__games)
 
         return self.__games[game_type][1]().to_json()
 
     def get_game_config(self, game_type:str, config:str):
         if game_type not in self.__games:
             raise RuntimeError("game_type is not recognized")
-        
+
         game_config = self.__games[game_type][1]()
         game_config.load_json(config)
 

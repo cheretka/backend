@@ -76,7 +76,7 @@ class Session:
         Parameters:
         websocket - player websocket
         '''
-
+        print("======= create_player()")
         game_client = GameClient(websocket, self.__communication_handler)
         self.__players[websocket.id] = game_client
 
