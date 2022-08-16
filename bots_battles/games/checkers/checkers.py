@@ -62,9 +62,11 @@ class CheckersGame(TurnGame):
         match len(self._players):
             case 0:
                 self._players[player_uuid] = CheckersPlayer(player_name, player_uuid, 'r')
+                self._game_logic.set_players(self._players)
             case 1:
                 self._players[player_uuid] = CheckersPlayer(player_name, player_uuid, 'a')
                 self.__no_2_players = False
+                self._game_logic.set_players(self._players)
             case 2:
                 needless_player_state = dict()
                 needless_player_state['game_status'] = "needless"
