@@ -19,11 +19,17 @@ class CheckersGameLogic(GameLogic):
 
         print("from frontend: ", message)
 
-        player = self.players.get(player_uuid, None)
+        player = self.players[player_uuid]
         if player is None:
             return None
 
         user_move = message['move']
+
+        if player.letter == 'r':
+            user_move[0][0] = 7 - user_move[0][0]
+            user_move[0][1] = 7 - user_move[0][1]
+            user_move[1][0] = 7 - user_move[1][0]
+            user_move[1][1] = 7 - user_move[1][1]
 
         if self.is_move_possible(user_move):
             self.board_state = self.board_state.make_move(user_move)

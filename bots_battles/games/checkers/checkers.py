@@ -53,6 +53,7 @@ class CheckersGame(TurnGame):
 
             await self.send_ping(delta)
 
+        await self.update_game_state()
         self.archive_record.dump_to_archive()
         self._cleanup()
 
@@ -102,7 +103,7 @@ class CheckersGame(TurnGame):
 
         state['last_move'] = self._game_logic.board_state.last_move
 
-        if self.__no_2_players:
+        if self.__no_2_players and self._game_logic.board_state.get_win() == None:
             state['game_status'] = "wait"
         else:
             match self._game_logic.board_state.get_win():
