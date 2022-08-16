@@ -12,9 +12,12 @@ class CheckersGameLogic(GameLogic):
         self.board_state = CheckersBoard()
         self.players = None
         self.history_of_moves = []
+        self.step_is_taken = False
 
 
     def process_input(self, player_uuid: str, message: Dict[str, str], delta: float):
+
+        print("from frontend: ", message)
 
         player = self.players.get(player_uuid, None)
         if player is None:
@@ -24,6 +27,9 @@ class CheckersGameLogic(GameLogic):
 
         if self.is_move_possible(user_move):
             self.board_state = self.board_state.make_move(user_move)
+            self.step_is_taken = True
+        else:
+            self.step_is_taken = False
 
         return None
 

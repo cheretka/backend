@@ -42,8 +42,9 @@ class CheckersGame(TurnGame):
 
             delta = await self._clock.tick(self._game_config['fps'])
 
-            # if there if changes ->
-            await self.update_game_state()
+            if self._game_logic.step_is_taken:
+                await self.update_game_state()
+                self._game_logic.step_is_taken = False
 
             if self.__no_2_players:
                 self.__empty_server_timer += delta
@@ -71,6 +72,7 @@ class CheckersGame(TurnGame):
 
         player_state = self.get_state_for_player(player_uuid)
         print("end")
+        self._game_logic.step_is_taken = True
         return orjson.dumps(player_state).decode("utf-8")
 
     def remove_player(self, player_uuid: UUID):
