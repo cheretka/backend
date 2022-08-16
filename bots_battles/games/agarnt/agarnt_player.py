@@ -15,7 +15,8 @@ class AgarntPlayer(Player):
     def velocity(cls, radius):
         log_value = np.log(radius) + 1
         # conversion to Python's float is necessary because np.log returns np.float64 object which is non-serializable
-        return float(cls.MAX_VELOCITY - max(0, min(log_value, cls.MAX_VELOCITY - 1)))  # clamp
+        return float(
+            cls.MAX_VELOCITY - max(0, min(log_value, cls.MAX_VELOCITY - 1)))  # clamp
 
     @classmethod
     def radius_func(cls, value):
@@ -29,7 +30,8 @@ class AgarntPlayer(Player):
         self.color = None
         self.score = 0
 
-    def update_position(self, directions: Dict[str, bool], board_size: Tuple[int, int], delta: float):
+    def update_position(self, directions: Dict[str, bool], board_size: Tuple[int, int],
+                        delta: float):
         if directions['U']:  # UP
             self.y += AgarntPlayer.velocity(self.radius) * delta
         if directions['D']:  # DOWN

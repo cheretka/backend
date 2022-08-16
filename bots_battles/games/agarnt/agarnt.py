@@ -19,11 +19,14 @@ from .board import Board
 class AgarntGame(RealtimeGame):
     instance_counter = 0
 
-    def __init__(self, game_config: AgarntGameConfig, communication_handler: CommunicationHandler):
+    def __init__(self, game_config: AgarntGameConfig,
+                 communication_handler: CommunicationHandler):
         self.__n_digits = 3
 
-        self.__board = Board(game_config['food_number'], (game_config['board_size'], game_config['board_size']))
-        super().__init__(AgarntGameLogic(self.__board), game_config, communication_handler)
+        self.__board = Board(game_config['food_number'],
+                             (game_config['board_size'], game_config['board_size']))
+        super().__init__(AgarntGameLogic(self.__board), game_config,
+                         communication_handler)
         self._game_logic.set_players(self._players)
 
         AgarntGame.instance_counter = AgarntGame.instance_counter + 1
@@ -38,15 +41,15 @@ class AgarntGame(RealtimeGame):
         self.archive_record = JSONGame(info)
 
     async def run(self):
-        print("agarent run(self)")
+
         delta = 0
         while not self._is_end():
-            components_to_update = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
+            components_to_update = self._communication_handler.handle_incomming_messages(
+                self._game_logic.process_input, delta)
             delta = await self._clock.tick(self._game_config['fps'])
-            # print("components_to_update delta")
-            # print(components_to_update)
-            # print(delta)
-            await self.update_game_state(components_to_update, round(delta, self.__n_digits))
+
+            await self.update_game_state(components_to_update,
+                                         round(delta, self.__n_digits))
 
             if self.__no_players:
                 self.__empty_server_timer += delta
@@ -59,7 +62,7 @@ class AgarntGame(RealtimeGame):
         self._cleanup()
 
     def add_player(self, player_uuid: UUID, player_name: str) -> str:
-        print("======= agarent add_player")
+
         self.__no_players = False
         x, y = self.__generate_random_position()
         self._players[player_uuid] = AgarntPlayer(player_name, player_uuid, (x, y))
@@ -105,8 +108,14 @@ class AgarntGame(RealtimeGame):
         current_player = self._players[player_uuid]
         state = self.__get_common_state_part(components_to_update, self.__n_digits)
         if "position" in components_to_update:
-            state['p'] = {'x': round(current_player.x, self.__n_digits), 'y': round(current_player.y, self.__n_digits), 'r': round(current_player.radius, self.__n_digits)}
-            state['ps'] = [{'n': player.player_name, 'x': round(player.x, self.__n_digits), 'y': round(player.y, self.__n_digits), 'r': round(player.radius, self.__n_digits)} for uuid, player in self._players.items() if uuid is not player_uuid]
+            state['p'] = {'x': round(current_player.x, self.__n_digits),
+                          'y': round(current_player.y, self.__n_digits),
+                          'r': round(current_player.radius, self.__n_digits)}
+            state['ps'] = [
+                {'n': player.player_name, 'x': round(player.x, self.__n_digits),
+                 'y': round(player.y, self.__n_digits),
+                 'r': round(player.radius, self.__n_digits)} for uuid, player in
+                self._players.items() if uuid is not player_uuid]
             state['d'] = 1 if current_player.is_defeated else 0
         if "score" in components_to_update:
             state['s'] = current_player.score
@@ -116,12 +125,17 @@ class AgarntGame(RealtimeGame):
     def get_state_for_spectator(self, components_to_update: Set[str]):
         state = self.__get_common_state_part(components_to_update, self.__n_digits)
         if "position" in components_to_update:
-            state['ps'] = [{'n': player.player_name, 'x': round(player.x, self.__n_digits), 'y': round(player.y, self.__n_digits), 'r': round(player.radius, self.__n_digits)} for uuid, player in self._players.items()]
+            state['ps'] = [
+                {'n': player.player_name, 'x': round(player.x, self.__n_digits),
+                 'y': round(player.y, self.__n_digits),
+                 'r': round(player.radius, self.__n_digits)} for uuid, player in
+                self._players.items()]
         return state
 
     def _is_end(self):
         '''Check if game should end.'''
-        return self._is_terminated or self.__empty_server_timer >= self._game_config["waiting_time"]
+        return self._is_terminated or self.__empty_server_timer >= self._game_config[
+            "waiting_time"]
 
     def _cleanup(self):
         pass
@@ -129,7 +143,9 @@ class AgarntGame(RealtimeGame):
     def __generate_random_position(self):
         wrong_position = True
         while wrong_position:
-            x, y = random.uniform(0, self.__board.max_size[0]), random.uniform(0, self.__board.max_size[1])
+            x, y = random.uniform(0, self.__board.max_size[0]), random.uniform(0,
+                                                                               self.__board.max_size[
+                                                                                   1])
             wrong_position = False
             for player in self._players.values():
                 if euclidean_distance(x, player.x, y, player.y) <= player.radius:
