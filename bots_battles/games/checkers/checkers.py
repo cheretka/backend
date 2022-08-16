@@ -1,23 +1,24 @@
 from __future__ import annotations
 
-import time
-from uuid import UUID
 import logging
-import orjson
+import time
 from copy import deepcopy
+from uuid import UUID
+
+import orjson
 
 from bots_battles.game_engine import CommunicationHandler, JSONGame, TurnGame
-from .checkers_board import CheckersBoard
 from .checkers_game_config import CheckersGameConfig
-from .checkers_player import CheckersPlayer
 from .checkers_game_logic import CheckersGameLogic
+from .checkers_player import CheckersPlayer
+
 
 class CheckersGame(TurnGame):
 
-    def __init__(self, game_config: CheckersGameConfig, communication_handler: CommunicationHandler):
+    def __init__(self, game_config: CheckersGameConfig,
+                 communication_handler: CommunicationHandler):
 
-        self.board_state = CheckersBoard()
-        super().__init__(CheckersGameLogic(self.board_state), game_config, communication_handler)
+        super().__init__(CheckersGameLogic(), game_config, communication_handler)
 
         self._game_logic.set_players(self._players)
 
@@ -35,13 +36,14 @@ class CheckersGame(TurnGame):
         while not self._is_end():
             time.sleep(1)
             print("---", len(self._players), " PLAYERS----")
-            move_completed = self._communication_handler.handle_incomming_messages(self._game_logic.process_input, delta)
+
+            self._communication_handler.handle_incomming_messages(
+                self._game_logic.process_input, delta)
+
             delta = await self._clock.tick(self._game_config['fps'])
 
-            print("move_completed ", move_completed)
-            if move_completed != None:
-                self.board_state = move_completed
-                await self.update_game_state()
+            # if there if changes ->
+            await self.update_game_state()
 
             if self.__no_2_players:
                 self.__empty_server_timer += delta
@@ -63,14 +65,19 @@ class CheckersGame(TurnGame):
                 self._players[player_uuid] = CheckersPlayer(player_name, player_uuid, 'a')
                 self.__no_2_players = False
             case 2:
-                # nie dodaje nowego gracza
-                pass
+                needless_player_state = dict()
+                needless_player_state['game_status'] = "needless"
+                return orjson.dumps(needless_player_state).decode("utf-8")
 
         player_state = self.get_state_for_player(player_uuid)
         print("end")
         return orjson.dumps(player_state).decode("utf-8")
 
     def remove_player(self, player_uuid: UUID):
+
+        current_player = self._players[player_uuid]
+        self._game_logic.board_state.steps_without_hitting[current_player.letter] = -1
+
         super().remove_player(player_uuid)
         if len(self._players) < 2:
             self.__no_2_players = True
@@ -80,21 +87,21 @@ class CheckersGame(TurnGame):
         state = dict()
 
         if current_player.letter == 'a':
-            state['board'] = self.board_state.board
+            state['board'] = self._game_logic.board_state.board
         elif current_player.letter == 'r':
-            state['board'] = self.turn_over_board(self.board_state.board)
+            state['board'] = self.turn_over_board(self._game_logic.board_state.board)
 
-        if self.board_state.current_player == current_player.letter and not self.__no_2_players:
+        if self._game_logic.board_state.current_player == current_player.letter and not self.__no_2_players:
             state['your_move'] = True
         else:
             state['your_move'] = False
 
-        state['last_move'] = self.board_state.last_move
+        state['last_move'] = self._game_logic.board_state.last_move
 
         if self.__no_2_players:
             state['game_status'] = "wait"
         else:
-            match self.board_state.get_win():
+            match self._game_logic.board_state.get_win():
                 case 'remis':
                     state['game_status'] = "draw"
                 case None:
@@ -116,7 +123,7 @@ class CheckersGame(TurnGame):
 
         board = deepcopy(b)
 
-        board =board[::-1]
+        board = board[::-1]
         for i in range(len(board)):
             board[i] = board[i][::-1]
 
@@ -124,9 +131,8 @@ class CheckersGame(TurnGame):
 
     def _is_end(self):
         '''Check if game should end.'''
-        return self._is_terminated \
-               or self.__empty_server_timer >= self._game_config["waiting_time"]
-               # or self.board_state.get_win() != None
+        return self._is_terminated or self.__empty_server_timer >= self._game_config[
+            "waiting_time"] or self._game_logic.board_state.get_win() != None
 
     def _cleanup(self):
         pass

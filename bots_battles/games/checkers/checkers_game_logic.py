@@ -5,10 +5,11 @@ from bots_battles.game_engine.game_logic import GameLogic
 from .checkers_board import CheckersBoard
 from .checkers_player import CheckersPlayer
 
+
 class CheckersGameLogic(GameLogic):
 
-    def __init__(self, board: CheckersBoard):
-        self.board = board
+    def __init__(self):
+        self.board_state = CheckersBoard()
         self.players = None
         self.history_of_moves = []
 
@@ -22,14 +23,13 @@ class CheckersGameLogic(GameLogic):
         user_move = message['move']
 
         if self.is_move_possible(user_move):
-            self.board = self.board.make_move(user_move)
-            return self.board
+            self.board_state = self.board_state.make_move(user_move)
 
         return None
 
     def is_move_possible(self, move):
 
-        possible_moves = self.board.get_possible_moves()
+        possible_moves = self.board_state.get_possible_moves()
 
         for pm in possible_moves:
             if pm[0] == move[0] and pm[-1] == move[1]:
