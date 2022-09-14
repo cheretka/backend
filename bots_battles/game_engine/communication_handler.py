@@ -19,7 +19,7 @@ class CommunicationHandler:
 
     def set_last_message(self, player_uuid: UUID, message: Dict[str, str]):
         '''
-        Method which store last incoming message into internal structure 
+        Method which store last incoming message into internal structure
         for futher processing.
         Threadsafe.
         '''
@@ -29,7 +29,7 @@ class CommunicationHandler:
 
     def handle_incomming_messages(self, fun: Callable[[str, Dict[str, str]], None], delta: float) -> Set[str]:
         '''
-        Method which will process all messages stored into queue 
+        Method which will process all messages stored into queue
         by passing them to callback 'fun' to futher handling.
         Threadsafe.
         Returns components names which defines which information should be updated.
@@ -38,7 +38,8 @@ class CommunicationHandler:
         with self.__incomming_messages_lock:
             for uuidWithMessage in self.__incoming_messages.items():
                 comp = fun(*uuidWithMessage, delta)
-                components_to_update = components_to_update.union(comp)
+                if comp != None:
+                    components_to_update = components_to_update.union(comp)
             self.__incoming_messages.clear()
         return components_to_update
 

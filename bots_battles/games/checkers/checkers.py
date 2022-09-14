@@ -34,8 +34,7 @@ class CheckersGame(TurnGame):
 
         delta = 0
         while not self._is_end():
-            time.sleep(1)
-            print("---", len(self._players), " PLAYERS----")
+            time.sleep(0.3)
 
             self._communication_handler.handle_incomming_messages(
                 self._game_logic.process_input, delta)
@@ -74,13 +73,13 @@ class CheckersGame(TurnGame):
                 return orjson.dumps(needless_player_state).decode("utf-8")
 
         player_state = self.get_state_for_player(player_uuid)
-        print("end")
         self._game_logic.step_is_taken = True
         return orjson.dumps(player_state).decode("utf-8")
 
     def remove_player(self, player_uuid: UUID):
 
         current_player = self._players[player_uuid]
+        print("=== remove_player", current_player.letter)
         self._game_logic.board_state.steps_without_hitting[current_player.letter] = -1
 
         super().remove_player(player_uuid)

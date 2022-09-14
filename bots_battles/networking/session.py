@@ -60,12 +60,14 @@ class Session:
             await self.__players[uuid].send(msg)
             msg_dict = orjson.loads(msg)
             if 'd' in msg_dict and msg_dict['d'] == 1:
+                print("---msg_dict ", msg_dict)
                 self.__game.remove_player(uuid)
                 client = self.__players.pop(uuid, None)
                 if client is not None:
                     await client.terminate()
                 logging.info('client disconnected via being defeated')
         except:
+            print("--- except")
             self.__game.remove_player(uuid)
             self.__game.remove_spectator(uuid)
             self.__players.pop(uuid, None)
@@ -86,6 +88,7 @@ class Session:
         try:
             await game_client.handle_messages()
         except:
+            print("--- except await game_client.handle_messages()")
             self.__game.remove_player(websocket.id)
             self.__players.pop(websocket.id, None)
             logging.info('client disconnected')

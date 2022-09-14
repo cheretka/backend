@@ -10,6 +10,9 @@ class CheckersGameLogic(GameLogic):
 
     def __init__(self):
         self.board_state = CheckersBoard()
+        print(self.board_state.board)
+        print(self.board_state.current_player)
+        print(self.board_state.get_possible_moves())
         self.players = None
         self.history_of_moves = []
         self.step_is_taken = False
@@ -17,7 +20,7 @@ class CheckersGameLogic(GameLogic):
 
     def process_input(self, player_uuid: str, message: Dict[str, str], delta: float):
 
-        print("from frontend: ", message)
+        print("                           from frontend: ", message)
 
         player = self.players[player_uuid]
         if player is None:
@@ -31,8 +34,11 @@ class CheckersGameLogic(GameLogic):
             user_move[1][0] = 7 - user_move[1][0]
             user_move[1][1] = 7 - user_move[1][1]
 
-        if self.is_move_possible(user_move):
-            self.board_state = self.board_state.make_move(user_move)
+        if self.is_move_possible(user_move) != False:
+            self.board_state = self.board_state.make_move(self.is_move_possible(user_move))
+            print(self.board_state.board)
+            print(self.board_state.current_player)
+            print(self.board_state.get_possible_moves())
             self.step_is_taken = True
         else:
             self.step_is_taken = False
@@ -45,9 +51,9 @@ class CheckersGameLogic(GameLogic):
 
         for pm in possible_moves:
             if pm[0] == move[0] and pm[-1] == move[1]:
-                return True
+                return pm
 
         return False
 
     def set_players(self, players: Dict[UUID, CheckersPlayer]):
-        self.__players = players
+        self.players = players

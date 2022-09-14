@@ -5,14 +5,23 @@ from copy import deepcopy
 class CheckersBoard:
 
     def __init__(self):
-        self.board = [[' ', 'r', ' ', 'r', ' ', 'r', ' ', 'r'],
-                      ['r', ' ', 'r', ' ', 'r', ' ', 'r', ' '],
-                      [' ', 'r', ' ', 'r', ' ', 'r', ' ', 'r'],
+        # self.board = [[' ', 'r', ' ', 'r', ' ', 'r', ' ', 'r'],
+        #               ['r', ' ', 'r', ' ', 'r', ' ', 'r', ' '],
+        #               [' ', 'r', ' ', 'r', ' ', 'r', ' ', 'r'],
+        #               [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        #               [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        #               ['a', ' ', 'a', ' ', 'a', ' ', 'a', ' '],
+        #               [' ', 'a', ' ', 'a', ' ', 'a', ' ', 'a'],
+        #               ['a', ' ', 'a', ' ', 'a', ' ', 'a', ' ']]
+
+        self.board = [[' ', 'r', ' ', ' ', ' ', ' ', ' ', ' '],
                       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                       [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                      ['a', ' ', 'a', ' ', 'a', ' ', 'a', ' '],
-                      [' ', 'a', ' ', 'a', ' ', 'a', ' ', 'a'],
-                      ['a', ' ', 'a', ' ', 'a', ' ', 'a', ' ']]
+                      [' ', ' ', 'a', ' ', 'a', ' ', ' ', ' '],
+                      [' ', 'a', ' ', 'a', ' ', ' ', ' ', ' '],
+                      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]
 
         self.current_player = "r"
         self.steps_without_hitting = {"r": 0, "a": 0}
@@ -39,7 +48,7 @@ class CheckersBoard:
     def make_move(self, move):
 
         newState = deepcopy(self)
-
+        print("move---", move)
         for index in range(len(move) - 1):
 
             start_x = move[index][0]
@@ -49,13 +58,13 @@ class CheckersBoard:
 
             newState.board[end_x][end_y] = newState.board[start_x][start_y]
 
-            if (end_x == (len(newState.board) - 1) and newState.board[end_x][
-                end_y] == 'r') or (end_x == 0 and newState.board[end_x][end_y] == 'a'):
+            if (end_x == (len(newState.board) - 1) and newState.board[end_x][end_y] == 'r') or (end_x == 0 and newState.board[end_x][end_y] == 'a'):
                 newState.board[end_x][end_y] = newState.board[end_x][end_y].upper()
 
             newState.board[start_x][start_y] = ' '
 
             if abs(end_x - start_x) == 2:
+                print("---2--", end_x, start_x, newState.board[(end_x + start_x) // 2][(end_y + start_y) // 2])
                 newState.board[(end_x + start_x) // 2][(end_y + start_y) // 2] = ' '
                 newState.steps_without_hitting[newState.get_current_player()] = 0
             else:
@@ -91,8 +100,7 @@ class CheckersBoard:
 
                         new_x = x + delta[index][0]
                         new_y = y + delta[index][1]
-                        if 0 <= new_x < len(self.board) and 0 <= new_y < len(
-                                self.board[x]) and self.board[new_x][new_y] == ' ':
+                        if 0 <= new_x < len(self.board) and 0 <= new_y < len(self.board[x]) and self.board[new_x][new_y] == ' ':
                             list_simple_moves.append([[x, y], [new_x, new_y]])
 
         return list_simple_moves

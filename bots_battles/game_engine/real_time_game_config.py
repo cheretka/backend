@@ -5,5 +5,5 @@ class RealtimeGameConfig(GameConfig):
     '''Defines real time game config.'''
     def __init__(self):
         super().__init__()
-        self._add_option('fps', IntOption("", 30), False)
-    
+        self._add_option('fps', IntOption("", 1000), False)
+
