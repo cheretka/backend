@@ -133,7 +133,6 @@ class CheckersGame(TurnGame):
     def get_state_for_spectator(self, components_to_update: Set[str]):
         state = dict()
         state['board'] = self._game_logic.board_state.board
-        state['player'] = self._game_logic.board_state.current_player
         state['last_move'] = self._game_logic.board_state.last_move
 
         if self.__no_2_players and self._game_logic.board_state.get_win() == None:
@@ -141,7 +140,10 @@ class CheckersGame(TurnGame):
         else:
             match self._game_logic.board_state.get_win():
                 case None:
-                    state['game_status'] = "on"
+                    if self._game_logic.board_state.current_player == 'r':
+                        state['game_status'] = "red turn"
+                    else:
+                        state['game_status'] = "white turn"
                 case 'remis':
                     state['game_status'] = "draw"
                 case 'a':
