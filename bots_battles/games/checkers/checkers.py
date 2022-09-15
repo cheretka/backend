@@ -99,15 +99,15 @@ class CheckersGame(TurnGame):
 
         if current_player.letter == 'a':
             state['board'] = self._game_logic.board_state.board
+            state['last_move'] = self._game_logic.board_state.last_move
         elif current_player.letter == 'r':
             state['board'] = self.turn_over_board(self._game_logic.board_state.board)
+            state['last_move'] = self.turn_over_move(self._game_logic.board_state.last_move)
 
         if self._game_logic.board_state.current_player == current_player.letter and not self.__no_2_players:
             state['your_move'] = True
         else:
             state['your_move'] = False
-
-        state['last_move'] = self._game_logic.board_state.last_move
 
         if self.__no_2_players and self._game_logic.board_state.get_win() == None:
             state['game_status'] = "wait"
@@ -136,7 +136,7 @@ class CheckersGame(TurnGame):
         state['last_move'] = self._game_logic.board_state.last_move
 
         if self.__no_2_players and self._game_logic.board_state.get_win() == None:
-            state['game_status'] = "wait"
+            state['game_status'] = "waiting for players"
         else:
             match self._game_logic.board_state.get_win():
                 case None:
@@ -162,6 +162,17 @@ class CheckersGame(TurnGame):
             board[i] = board[i][::-1]
 
         return board
+
+    def turn_over_move(self, last_move):
+
+        move = deepcopy(last_move)
+
+        move[0][0] = 7 - move[0][0]
+        move[0][1] = 7 - move[0][1]
+        move[1][0] = 7 - move[1][0]
+        move[1][1] = 7 - move[1][1]
+
+        return move
 
     def _is_end(self):
         '''Check if game should end.'''
