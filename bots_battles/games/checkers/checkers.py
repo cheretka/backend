@@ -104,7 +104,7 @@ class CheckersGame(TurnGame):
             state['board'] = self.turn_over_board(self._game_logic.board_state.board)
             state['last_move'] = self.turn_over_move(self._game_logic.board_state.last_move)
 
-        state['player'] = self._game_logic.board_state.current_player
+        state['player'] = current_player.letter
 
         if self._game_logic.board_state.current_player == current_player.letter and not self.__no_2_players:
             state['your_move'] = True
