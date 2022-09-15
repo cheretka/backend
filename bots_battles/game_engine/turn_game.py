@@ -41,7 +41,9 @@ class TurnGame(Game):
 
         for spectator_uuid in self._spectators.keys():
             states[spectator_uuid] = orjson.dumps(spectator_state).decode("utf-8")
-        await self._communication_handler.handle_game_state(states)
+
+        if self._spectators.keys():
+            await self._communication_handler.handle_game_state(states)
 
 
         states: Dict[UUID, str] = dict()
