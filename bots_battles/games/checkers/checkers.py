@@ -80,7 +80,7 @@ class CheckersGame(TurnGame):
     def add_spectator(self, spectator_uuid: UUID, spectator_name: str) -> str:
         self._spectators[spectator_uuid] = Spectator(spectator_uuid, spectator_name)
 
-        spectator_state = self.get_state_for_spectator()
+        spectator_state = self.get_state_for_spectator(None)
         return orjson.dumps(spectator_state).decode("utf-8")
 
     def remove_player(self, player_uuid: UUID):
@@ -184,6 +184,3 @@ class CheckersGame(TurnGame):
     def _cleanup(self):
         pass
 
-    def get_state_for_spectator(self, components_to_update: Set[str]):
-        pass
-        return None
