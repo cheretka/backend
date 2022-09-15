@@ -104,6 +104,8 @@ class CheckersGame(TurnGame):
             state['board'] = self.turn_over_board(self._game_logic.board_state.board)
             state['last_move'] = self.turn_over_move(self._game_logic.board_state.last_move)
 
+        state['player'] = self._game_logic.board_state.current_player
+
         if self._game_logic.board_state.current_player == current_player.letter and not self.__no_2_players:
             state['your_move'] = True
         else:
@@ -128,6 +130,7 @@ class CheckersGame(TurnGame):
                     else:
                         state['game_status'] = "lost"
 
+        print("state ", state)
         return state
 
     def get_state_for_spectator(self, components_to_update: Set[str]):
@@ -164,14 +167,13 @@ class CheckersGame(TurnGame):
         return board
 
     def turn_over_move(self, last_move):
-
         move = deepcopy(last_move)
 
-        move[0][0] = 7 - move[0][0]
-        move[0][1] = 7 - move[0][1]
-        move[1][0] = 7 - move[1][0]
-        move[1][1] = 7 - move[1][1]
+        for i in range(len(move)):
+            for j in range(len(move[i])):
+                move[i][j] = 7 - move[i][j]
 
+        print("...............move ", last_move, move)
         return move
 
     def _is_end(self):

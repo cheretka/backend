@@ -70,7 +70,7 @@ class CheckersBoard:
 
         newState.current_player = 'a' if newState.current_player == 'r' else 'r'
 
-        newState.last_move = [move[0], move[-1]]
+        newState.last_move = move
 
         return newState
 
