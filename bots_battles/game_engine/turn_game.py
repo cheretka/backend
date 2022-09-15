@@ -36,7 +36,7 @@ class TurnGame(Game):
         Helper method which can be used to get all players states and pass them to communication handler.
         '''
 
-
+        states = dict()
         spectator_state = self.get_state_for_spectator(None)
 
         for spectator_uuid in self._spectators.keys():
