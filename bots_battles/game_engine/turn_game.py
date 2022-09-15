@@ -35,18 +35,21 @@ class TurnGame(Game):
         '''
         Helper method which can be used to get all players states and pass them to communication handler.
         '''
-        states: Dict[UUID, str] = dict()
 
+
+        spectator_state = self.get_state_for_spectator(None)
+
+        for spectator_uuid in self._spectators.keys():
+            states[spectator_uuid] = orjson.dumps(spectator_state).decode("utf-8")
+        await self._communication_handler.handle_game_state(states)
+
+
+        states: Dict[UUID, str] = dict()
 
         for player_uuid in self._players.keys():
             player_state = self.get_state_for_player(player_uuid)
             states[player_uuid] = orjson.dumps(player_state).decode("utf-8")
 
-        # print("player_state")
-        # print(player_state)
-        # print("states to front")
-        # print(states)
-        # print("\n\n")
         await self._communication_handler.handle_game_state(states)
 
     async def send_ping(self, delta):
