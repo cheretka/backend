@@ -139,20 +139,20 @@ class CheckersGame(TurnGame):
         state['last_move'] = self._game_logic.board_state.last_move
 
         if self.__no_2_players and self._game_logic.board_state.get_win() == None:
-            state['game_status'] = "waiting for players"
+            state['game_status'] = "Waiting for players..."
         else:
             match self._game_logic.board_state.get_win():
                 case None:
                     if self._game_logic.board_state.current_player == 'r':
-                        state['game_status'] = "red turn"
+                        state['game_status'] = "Red's turn"
                     else:
-                        state['game_status'] = "white turn"
+                        state['game_status'] = "White's turn"
                 case 'remis':
-                    state['game_status'] = "draw"
+                    state['game_status'] = "Game finished as draw!"
                 case 'a':
-                    state['game_status'] = "won white"
+                    state['game_status'] = "White won!"
                 case 'r':
-                    state['game_status'] = "won red"
+                    state['game_status'] = "Red won!"
 
         return state
 
