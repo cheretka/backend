@@ -48,7 +48,6 @@ class CheckersBoard:
     def make_move(self, move):
 
         newState = deepcopy(self)
-        print("move---", move)
         for index in range(len(move) - 1):
 
             start_x = move[index][0]
@@ -64,7 +63,6 @@ class CheckersBoard:
             newState.board[start_x][start_y] = ' '
 
             if abs(end_x - start_x) == 2:
-                print("---2--", end_x, start_x, newState.board[(end_x + start_x) // 2][(end_y + start_y) // 2])
                 newState.board[(end_x + start_x) // 2][(end_y + start_y) // 2] = ' '
                 newState.steps_without_hitting[newState.get_current_player()] = 0
             else:

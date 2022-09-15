@@ -8,6 +8,7 @@ from uuid import UUID
 import orjson
 
 from bots_battles.game_engine import CommunicationHandler, JSONGame, TurnGame
+from bots_battles.game_engine.player import Spectator
 from .checkers_game_config import CheckersGameConfig
 from .checkers_game_logic import CheckersGameLogic
 from .checkers_player import CheckersPlayer
@@ -76,6 +77,12 @@ class CheckersGame(TurnGame):
         self._game_logic.step_is_taken = True
         return orjson.dumps(player_state).decode("utf-8")
 
+    def add_spectator(self, spectator_uuid: UUID, spectator_name: str) -> str:
+        self._spectators[spectator_uuid] = Spectator(spectator_uuid, spectator_name)
+
+        spectator_state = self.get_state_for_spectator()
+        return orjson.dumps(spectator_state).decode("utf-8")
+
     def remove_player(self, player_uuid: UUID):
 
         current_player = self._players[player_uuid]
@@ -120,6 +127,27 @@ class CheckersGame(TurnGame):
                         state['game_status'] = "won"
                     else:
                         state['game_status'] = "lost"
+
+        return state
+
+    def get_state_for_spectator(self, components_to_update: Set[str]):
+        state = dict()
+        state['board'] = self._game_logic.board_state.board
+        state['player'] = self._game_logic.board_state.current_player
+        state['last_move'] = self._game_logic.board_state.last_move
+
+        if self.__no_2_players and self._game_logic.board_state.get_win() == None:
+            state['game_status'] = "wait"
+        else:
+            match self._game_logic.board_state.get_win():
+                case None:
+                    state['game_status'] = "on"
+                case 'remis':
+                    state['game_status'] = "draw"
+                case 'a':
+                    state['game_status'] = "won white"
+                case 'r':
+                    state['game_status'] = "won red"
 
         return state
 
