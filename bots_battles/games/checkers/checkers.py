@@ -130,7 +130,6 @@ class CheckersGame(TurnGame):
                     else:
                         state['game_status'] = "lost"
 
-        print("state ", state)
         return state
 
     def get_state_for_spectator(self, components_to_update: Set[str]):
