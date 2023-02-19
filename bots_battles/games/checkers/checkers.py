@@ -60,15 +60,14 @@ class CheckersGame(TurnGame):
     def add_player(self, player_uuid: UUID, player_name: str) -> str:
 
         print("add_player() len:", len(self._players))
-        match len(self._players):
-            case 0:
+        if  len(self._players) == 0:
                 self._players[player_uuid] = CheckersPlayer(player_name, player_uuid, 'r')
                 self._game_logic.set_players(self._players)
-            case 1:
+        elif len(self._players) == 1:
                 self._players[player_uuid] = CheckersPlayer(player_name, player_uuid, 'a')
                 self.__no_2_players = False
                 self._game_logic.set_players(self._players)
-            case 2:
+        elif len(self._players) == 2:
                 needless_player_state = dict()
                 needless_player_state['game_status'] = "needless"
                 return orjson.dumps(needless_player_state).decode("utf-8")
@@ -114,17 +113,16 @@ class CheckersGame(TurnGame):
         if self.__no_2_players and self._game_logic.board_state.get_win() == None:
             state['game_status'] = "wait"
         else:
-            match self._game_logic.board_state.get_win():
-                case 'remis':
+            if self._game_logic.board_state.get_win() == 'remis':
                     state['game_status'] = "draw"
-                case None:
+            elif self._game_logic.board_state.get_win() == None:
                     state['game_status'] = "on"
-                case 'a':
+            elif self._game_logic.board_state.get_win() == 'a':
                     if current_player.letter == 'a':
                         state['game_status'] = "won"
                     else:
                         state['game_status'] = "lost"
-                case 'r':
+            elif self._game_logic.board_state.get_win() == 'r':
                     if current_player.letter == 'r':
                         state['game_status'] = "won"
                     else:
@@ -140,17 +138,16 @@ class CheckersGame(TurnGame):
         if self.__no_2_players and self._game_logic.board_state.get_win() == None:
             state['game_status'] = "Waiting for players..."
         else:
-            match self._game_logic.board_state.get_win():
-                case None:
+            if self._game_logic.board_state.get_win()== None:
                     if self._game_logic.board_state.current_player == 'r':
                         state['game_status'] = "Red's turn"
                     else:
                         state['game_status'] = "White's turn"
-                case 'remis':
+            elif self._game_logic.board_state.get_win() == 'remis':
                     state['game_status'] = "Game finished as draw!"
-                case 'a':
+            elif self._game_logic.board_state.get_win() == 'a':
                     state['game_status'] = "White won!"
-                case 'r':
+            elif self._game_logic.board_state.get_win() == 'r':
                     state['game_status'] = "Red won!"
 
         return state

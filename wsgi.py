@@ -19,7 +19,7 @@ if __name__ == "__main__":
     ws_port = os.environ.get("WS_PORT", 2137)
 
     game_factory = GameFactory(GAMES)
-    game_server = GameServer(game_factory, "0.0.0.0", ws_port)
+    game_server = GameServer(game_factory, "127.0.0.1", ws_port)
 
     def game_server_init(game_server, game_factory):
         asyncio.set_event_loop(asyncio.new_event_loop())
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     app = create_app(game_server, game_factory)
 
     try:
-        app.run(debug=not production, host="0.0.0.0", port=port, use_reloader=False)
+        app.run(debug=not production, host="127.0.0.1", port=port, use_reloader=False)
     except KeyboardInterrupt:
         logging.info("Keyboard interrupt")
 
