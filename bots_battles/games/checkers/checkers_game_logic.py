@@ -20,7 +20,7 @@ class CheckersGameLogic(GameLogic):
 
     def process_input(self, player_uuid: str, message: Dict[str, str], delta: float):
 
-        print("                           from frontend: ", message)
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++from frontend/bot: ", message)
 
         player = self.players[player_uuid]
         if player is None:
@@ -51,8 +51,10 @@ class CheckersGameLogic(GameLogic):
 
         for pm in possible_moves:
             if pm[0] == move[0] and pm[-1] == move[1]:
+                print("move", move, "is possible")
                 return pm
 
+        print("move", move, "not corect!!!!!!")
         return False
 
     def set_players(self, players: Dict[UUID, CheckersPlayer]):
