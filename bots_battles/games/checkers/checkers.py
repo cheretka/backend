@@ -99,9 +99,11 @@ class CheckersGame(TurnGame):
         if current_player.letter == 'a':
             state['board'] = self._game_logic.board_state.board
             state['last_move'] = self._game_logic.board_state.last_move
+            state['possible_moves'] = self._game_logic.board_state.get_possible_moves()
         elif current_player.letter == 'r':
             state['board'] = self.turn_over_board(self._game_logic.board_state.board)
             state['last_move'] = self.turn_over_move(self._game_logic.board_state.last_move)
+            state['possible_moves'] = self.turn_over_moves(self._game_logic.board_state.get_possible_moves())
 
         state['player'] = current_player.letter
 
@@ -152,25 +154,20 @@ class CheckersGame(TurnGame):
 
         return state
 
+
     def turn_over_board(self, b):
-
-        board = deepcopy(b)
-
-        board = board[::-1]
-        for i in range(len(board)):
-            board[i] = board[i][::-1]
-
+        board = [row[::-1] for row in reversed(b)]
         return board
 
+    
     def turn_over_move(self, last_move):
-        move = deepcopy(last_move)
-
-        for i in range(len(move)):
-            for j in range(len(move[i])):
-                move[i][j] = 7 - move[i][j]
-
-        print("...............move ", last_move, move)
+        move = [[7 - col for col in row] for row in last_move]
         return move
+
+    
+    def turn_over_moves(self, possible_moves):
+        cc = [[[7 - col for col in row] for row in move] for move in possible_moves]
+        return cc
 
     def _is_end(self):
         '''Check if game should end.'''
