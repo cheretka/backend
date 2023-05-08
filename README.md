@@ -11,4 +11,4 @@
 It should run on localhost.
 
 ---
-python wsgi.py
+`python wsgi.py`
